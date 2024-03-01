@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="../scripts/lib.js"></script>
+
+<!-- Header -->
+    <nav class="navbar navbar-expand-sm bg-body-tertiary border-bottom border-body">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html"> 
+                <img src="../media/icon_meal.png" class="img-fluid" style="height:100px; width:100px;"> 
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"> <a class="nav-link active" aria-current="page" href="index.html">Home</a> </li>
+                    <li class="nav-item"> <a class="nav-link active" href="../pages/profile.html">Profile</a> </li>
+                </ul>
+                <input type="search" id="query_by_name" class="form-control"  onkeyup="window.location.href = '../pages/index.html?method=s&value=' + document.getElementById('query_by_name').value" placeholder="Search by name">
+                <input type="search" maxlength="1" id="query_by_first_letter" class="form-control"  onkeyup="window.location.href = '../pages/index.html?method=f&value=' + document.getElementById('query_by_first_letter').value" placeholder="Search by first letter">
+                <input type="search" maxlength="1" id="query_by_ingredient" class="form-control"  onkeyup="window.location.href = '../pages/index.html?method=i&value=' + document.getElementById('query_by_ingredient').value" placeholder="Search by ingredient">
+            </div>
+        </div>
+    </nav>
+<!---->
+
+<!-- Meal Details -->
+    <div class="container">
+        <div class="card mx-auto mt-4 bg-body-tertiary">
+            <div class="row g-0">
+                <div class="col-lg-4">
+                    <img class="card-img-top" alt="...">
+                </div>
+                <div class="col-lg-8">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-11">
+                                <h2 class="card-title">Card title</h2>
+                            </div>
+                            <div class="col-1">                            
+                                <img src="../media/icons/heart.svg" class="img-fluid" id="favourite-button" alt="Favourite Icon" width="20" height="20" onclick="toggle_favourite(this, get_meal_id_from_url())">
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-body-tertiary"><b>Ingredients</b><br></li>
+                        <li class="list-group-item bg-body-tertiary"><b>Category</b><br></li>
+                        <li class="list-group-item bg-body-tertiary"><b>Area</b><br></li>
+                        <li class="list-group-item bg-body-tertiary"><b>Personal notes</b><br></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-control p-4">
+                <details>
+                <summary> <b>Review the meal</b> </summary>
+                <form onsubmit="return review_submit(get_meal_id_from_url())">
+                    <input type="number" class="d-none" id="vote-taste" name="vote-taste" required>
+                    <input type="number" class="d-none" id="vote-simplicity" name="vote-simplicity" required>
+                    <div id="stars-rating-system"></div>
+                    <!-- A print_stars() function is inserting here the stars for the review -->
+                    <div class="mb-3">
+                        <label class="form-label" for="vote-date">Date cooked</label>
+                        <input type="date" class="form-control" id="vote-date" required>
+                        <div class="alert alert-danger d-none" id="date_cooked_alert" role="alert">
+                            Date cooked is not valid!
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="vote-text">Tell us more</label>
+                        <textarea class="form-control" id="vote-text"></textarea>
+                    </div>
+                    <button id="submit_review_button" type="submit" class="btn btn-primary">Submit</button>
+                    <button id="delete_review_button" type="button" class="btn btn-danger d-none" onclick="delete_review(localStorage.getItem('logged_user_email'), get_meal_id_from_url())">Delete review</button>
+                </form>
+            </details>
+            </div>
+
+            <div class="container p-4 bg-body-tertiary">
+                <b>Instructions</b>
+                <p class="card-text"></p>
+            </div>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="container border p-4" id="favourites_list">
+            <div class="container">
+                <p class="d-none no_results_alert"> No results </p>
+            </div>
+            <div id="review_list" class="row g-4 mt-2 d-flex flex-row flex-nowrap overflow-y-auto">
+                <div id="review_master" class="col-6 col-md-5 col-lg-4 col-xl-3 d-none">
+
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title review_title"></h5>
+                            <p class="card-text review_stars"></p>
+                            <p class="card-text review_text"></p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <p class="card-text review_date">
+                                <small class="card-date text-body-secondary"></small>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!---->
+    </div>
+<!---->
+
+<!-- Main script -->
+    <script>
+        let meal_id = get_meal_id_from_url();
+        let logged_user_email = localStorage.getItem('logged_user_email');
+        let favourite_button = document.getElementById("favourite-button");
+        let meals_stored = JSON.parse(localStorage.getItem("meals"));
+        let users = JSON.parse(localStorage.getItem('users'));
+
+        // auth_protection
+        if (!localStorage.getItem('logged_user_email')){
+            alert("you are not authorized to see this page. Login before!");
+            window.location.href = "../authentication/login.html";
+        }
+        //
+
+        // insert interactive stars in the divs inside the form
+        print_stars(document.getElementById("stars-rating-system"), true);
+        //
+
+        // select the meal from the local storage to avoid redundant server requests
+        for (meal of meals_stored)
+            if (meal.idMeal == meal_id){
+                show_meal_details(meal);
+                break;
+            }
+        //
+
+        // update favourite button view
+        for (user of users)
+            if (user.email == logged_user_email) // access the right user
+                if (user.favourites.find(id => id === meal_id))
+                    favourite_button.src = "../media/icons/heart-fill.svg";
+        //
+
+        // update recently viewed list in localStorage
+        for (user of users){
+            if (user.email == logged_user_email){ // access the right user
+                if (user.recently_viewed.find(id => id === meal_id)){ // if the meal was already viewed
+                    let to_pop = user.recently_viewed.findIndex(id => id === meal_id);
+                    user.recently_viewed.splice(to_pop, 1); // delete the previous view stored
+                }
+                user.recently_viewed.splice(0, 0, meal_id); // insert meal_id at position 0 of the recently_viewed list
+            }
+        }
+        localStorage.setItem('users', JSON.stringify(users));
+        //
+
+        // Show the review if exists on page load
+        for (meal of meals_stored){ // for each meal
+            for (let i=0; i<meal.reviews.length; i++){ // for each review
+                let current_review = meal.reviews[i];
+                if (current_review.user == logged_user_email && meal.idMeal == meal_id){ // if there's already an user's review for this meal
+                    let taste_star_stored = document.getElementsByClassName("taste-star")[current_review.taste-1];
+                    let simplicity_star_stored = document.getElementsByClassName("simplicity-star")[current_review.simplicity-1];
+                    // show taste review
+                    star_click(taste_star_stored);
+                    star_over(taste_star_stored);
+                    //
+                    // show simplicity review
+                    star_click(simplicity_star_stored);
+                    star_over(simplicity_star_stored);
+                    //
+                    // show date cooked
+                    document.getElementById("vote-date").value = current_review.date;
+                    document.getElementById("vote-text").value = current_review.text;
+                    document.getElementById("delete_review_button").classList.remove("d-none");
+                    document.getElementById("submit_review_button").innerHTML = "Update";
+                    //
+                }
+            }
+        }
+        // 
+
+        // show reviews
+        for (meal of meals_stored)
+            if (meal.idMeal == meal_id){
+                if (meal.reviews.length > 0)
+                    // sort the reviews in descending order and then given them to the show_review() function
+                    show_reviews(meal.reviews.sort((a, b) => {
+                        const dateA = new Date(a.date).getTime();
+                        const dateB = new Date(b.date).getTime();
+                        return dateB - dateA; // Sort by date in descending order
+                    }));
+                    //
+                else
+                    document.getElementById("favourites_list").classList.add("d-none");
+            }
+        //
+
+        function show_meal_details(meal) {
+            let category = meal["strCategory"];
+            let area = meal["strArea"];
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let personal_notes = meal["personal_notes"];
+            let note_value = "";
+            for (note of personal_notes)
+                if (note.user == logged_user_email) // if there's aready a user's note saved
+                    note_value = note.text;
+
+            document.getElementsByClassName('card-img-top')[0].src = meal.strMealThumb;
+            document.getElementsByClassName('card-title')[0].innerHTML = meal.strMeal;
+            document.getElementsByClassName('card-text')[0].innerHTML = meal.strInstructions;
+            document.getElementsByClassName('list-group-item')[0].innerHTML += get_ingredients_from_json(meal.ingredients);
+            document.getElementsByClassName('list-group-item')[1].innerHTML += category;
+            document.getElementsByClassName('list-group-item')[2].innerHTML += area;
+            document.getElementsByClassName('list-group-item')[3].innerHTML += '<textarea class="form-control" id="personal_notes_area" onkeyup="personal_notes_changed(document.getElementById(\'personal_notes_area\').value)">' + note_value + '</textarea>';
+        }
+
+        function personal_notes_changed(value){
+            let meals_stored = JSON.parse(localStorage.getItem('meals'));
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let meal_id = get_meal_id_from_url();
+            
+            let new_note = {
+                user : logged_user_email,
+                text : value
+            };
+
+            // save or update the personal note
+            let already_exist = false;
+            
+            for (meal of meals_stored)
+                if (meal.idMeal == meal_id){ // access the specific meal to insert the note
+                    for (let i=0; i<meal.personal_notes.length; i++) //access the meal's personal notes
+                        if (meal.personal_notes[i].user == logged_user_email){ // if a review of the user already exists
+                            meal.personal_notes.splice(i, 1, new_note);
+                            already_exist = true;
+                        }
+                    
+                    if (!already_exist)
+                        meal.personal_notes.push(new_note);
+                }
+            localStorage.setItem("meals", JSON.stringify(meals_stored));
+        }
+
+        function show_reviews(reviews){
+            meal_id = get_meal_id_from_url();
+            // show the stored meals
+            let list = document.getElementById('review_list');
+            let master = document.getElementById('review_master');
+            list.innerHTML = "";
+            list.appendChild(master);
+            for (var i = 0; i < reviews.length; i++) {
+                var clone = master.cloneNode(true);
+                clone.id = 'card-review-' + i;
+                clone.getElementsByClassName('review_title')[0].innerHTML = get_full_name_from_user(reviews[i].user);
+                print_stars(clone.getElementsByClassName('review_stars')[0], false, true, meal_id, reviews[i].user, null);
+                clone.getElementsByClassName('review_text')[0].innerHTML = reviews[i].text;
+                clone.getElementsByClassName('review_date')[0].innerHTML = convert_date_yyyy_mm_dd_to_dd_mm_yyyy(reviews[i].date);
+
+                list.appendChild(clone);
+                clone.classList.remove('d-none');
+            }
+            //
+        }
+
+        function get_ingredients_from_json(ingredients){
+            /*
+            Takes a json of ingredients in the format [{name:quantity}, ...].
+            Returns a string containing the formatted list of ingredient in the format: name : quantity | name : quantity ...
+            */
+            let result = "";
+            for (let i=0; i<ingredients.length; i++)
+                if (i != ingredients.length-1)
+                    result += ingredients[i].name + ' : ' + ingredients[i].quantity + ' | ';
+                else
+                    result += ingredients[i].name + ' : ' + ingredients[i].quantity + ' ';
+            return result;
+        }
+
+        function get_meal_id_from_url(){
+            return new URLSearchParams(window.location.search).get('idMeal');
+        }
+
+        function convert_date_yyyy_mm_dd_to_dd_mm_yyyy(date){
+            return date.slice(8,10) + "-" + date.slice(5,7) + "-" + date.slice(0,4);
+        }
+
+        function get_full_name_from_user(user_email){
+            let users = JSON.parse(localStorage.getItem("users"));
+
+            for (user of users)
+                if (user.email == user_email && user.first_name != "" && user.last_name != "")
+                    return user.first_name + " " + user.last_name;
+
+            return "Anonymous";
+        }
+
+        function review_submit(meal_id){
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let meals_stored = JSON.parse(localStorage.getItem("meals"));
+            let vote_taste = document.getElementById("vote-taste").value;
+            let vote_simplicity = document.getElementById("vote-simplicity").value;
+            let vote_date = document.getElementById("vote-date").value;
+            let vote_text = document.getElementById("vote-text").value;
+
+            let new_review = {
+                user : logged_user_email,
+                date : vote_date,
+                taste : parseInt(vote_taste),
+                simplicity : parseInt(vote_simplicity),
+                text : vote_text
+            };
+
+            // save or update the submitted review
+            let already_exist = false;
+            if (birth_date_valid(vote_date)){
+                for (meal of meals_stored)
+                    if (meal.idMeal == meal_id){ // access the specific meal to review
+                        for (let i=0; i<meal.reviews.length; i++) //access the meal's reviews
+                            if (meal.reviews[i].user == logged_user_email){ // if a review of the user already exists
+                                meal.reviews.splice(i, 1, new_review);
+                                already_exist = true;
+                                alert("Review updated successfully!");
+                            }
+                        
+                        if (!already_exist){
+                            meal.reviews.push(new_review);
+                            alert("Review saved successfully!");
+                        }
+                    }
+                localStorage.setItem("meals", JSON.stringify(meals_stored));
+                window.location.reload();
+            }else
+                document.getElementById("date_cooked_alert").classList.remove("d-none");
+            //
+            
+            return false;
+        }
+
+        function toggle_favourite(elem, meal_id){
+            // update favourites list in localStorage
+            let users = JSON.parse(localStorage.getItem('users'));
+            for (user of users){
+                if (user.email == logged_user_email){ // access the right user
+                    if (user.favourites.find(id => id === meal_id)){ // it is already a favourite
+                        let to_pop = user.favourites.findIndex(id => id === meal_id);
+                        user.favourites.splice(to_pop, 1); // delete the favourite
+                        elem.src = "../media/icons/heart.svg"
+                    } else { // it's not already a favourite
+                        user.favourites.splice(0, 0, meal_id);
+                        elem.src = "../media/icons/heart-fill.svg";
+                    }
+                }
+            }
+            localStorage.setItem('users', JSON.stringify(users));
+            //
+        }
+    </script>
+<!---->
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
