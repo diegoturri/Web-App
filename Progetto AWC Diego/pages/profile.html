@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="../scripts/lib.js"></script>
+
+<!-- Header -->
+    <nav class="navbar navbar-expand-sm bg-body-tertiary border-bottom border-body">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html"> 
+                <img src="../media/icon_meal.png" class="img-fluid" style="height:100px; width:100px;"> 
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"> <a class="nav-link active" aria-current="page" href="index.html">Home</a> </li>
+                    <li class="nav-item"> <a class="nav-link active" href="../pages/profile.html">Profile</a> </li>
+                </ul>
+                <input type="search" id="query_by_name" class="form-control"  onkeyup="window.location.href = '../pages/index.html?method=s&value=' + document.getElementById('query_by_name').value" placeholder="Search by name">
+                <input type="search" maxlength="1" id="query_by_first_letter" class="form-control"  onkeyup="window.location.href = '../pages/index.html?method=f&value=' + document.getElementById('query_by_first_letter').value" placeholder="Search by first letter">
+                <input type="search" maxlength="1" id="query_by_ingredient" class="form-control"  onkeyup="window.location.href = '../pages/index.html?method=i&value=' + document.getElementById('query_by_ingredient').value" placeholder="Search by ingredient">
+            </div>
+        </div>
+    </nav>
+<!---->
+
+<!-- Profile Picture-->
+    <div class="container text-center mt-4 bg-body-tertiary">
+        <!-- Profile Image -->
+        <div class="row p-4 h-100">
+            <div class="col"> </div>
+            <div class="col-md-4">
+                <img src="../media/icon_user.png" class="img-fluid">
+            </div>
+            <div class="col"></div>
+        </div>
+<!---->
+
+<!-- Email -->
+        <form onsubmit="return edit_email()">
+            <div class="row p-4 g-0"> 
+                <div class="col-12 col-xl-2">
+                    <span class="input-group-text" id="email_span">Email</span>
+                </div>
+                <div class="col-10 col-xl-8">
+                    <input type="text" id="email" class="form-control" aria-describedby="email_span" required>
+                </div>
+                <div class="col-2 m-0 p-0">
+                    <button type="submit" class="btn btn-primary"> Update </button>
+                </div>
+            </div>
+            <div class="alert alert-danger d-none" id="user_email_alert" role="alert">
+                Insert a valid email!
+            </div>
+        </form>
+
+        <form onsubmit="return update_email()">
+            <div class="row p-4 g-0 border border-danger d-none" id="email_password_needed">
+                <div class="col-12 col-xl-2">
+                    <span id="email_password_request" class="input-group-text">Insert your password</span>
+                </div>
+                <div class="col-10 col-xl-8">
+                    <input type="password" id="email_password_given" class="form-control" aria-describedby="email_password_request" required>
+                </div>
+                <div class="col-2 m-0 p-0">
+                    <button type="submit" class="btn btn-primary"> Confirm </button>
+                </div>
+            </div>
+        </form>
+<!---->
+
+<!-- Pasword -->
+        <form onsubmit="return edit_password()">
+            <div class="row p-4 g-0">
+                <div class="col-12 col-xl-2">
+                    <span class="input-group-text" id="password_span">Password</span>
+                </div>
+                <div class="col-10 col-xl-8">
+                    <input type="password" id="password" class="form-control" aria-describedby="password_span" required>
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-primary"> Update </button>
+                </div>
+            </div>
+            <div class="alert alert-danger d-none" id="user_password_alert" role="alert">
+                Password must be minimum eight characters, at least one letter, one number and one special character!
+            </div>
+        </form>
+
+        <form onsubmit="return update_password()">
+            <div class="row p-4 g-0 border border-danger d-none" id="password_password_needed">
+                <div class="col-12 col-xl-2">
+                    <span id="password_password_request" class="input-group-text">Insert your password</span>
+                </div>
+                <div class="col-10 col-xl-8">
+                    <input type="password" id="password_password_given" class="form-control" aria-describedby="password_password_request" required>
+                </div>
+                <div class="col-2 m-0 p-0">
+                    <button type="submit" class="btn btn-primary"> Confirm </button>
+                </div>
+            </div>
+        </form>
+<!---->
+
+<!-- First Name -->
+        <form onsubmit="return update_first_name()">
+            <div class="row p-4 g-0">
+                <div class="col-12 col-xl-2">
+                    <span class="input-group-text" id="first_name_span">First Name</span>
+                </div>
+                <div class="col-10 col-xl-8">
+                    <input type="text" id="first-name" class="form-control" aria-describedby="first_name_span">
+                </div>
+                <div class="col-2 m-0 p-0">
+                    <button type="submit" class="btn btn-primary"> Update </button>
+                </div>
+            </div>
+        </form>
+<!---->
+
+<!-- Last Name -->
+        <form onsubmit="return update_last_name()">
+            <div class="row p-4 g-0">
+                <div class="col-12 col-xl-2">
+                    <span class="input-group-text" id="last_name_span">Last Name</span>
+                </div>
+                <div class="col-10 col-xl-8">
+                    <input type="text" id="last-name" class="form-control" aria-describedby="last_name_span">
+                </div>
+                <div class="col-2 m-0 p-0">
+                    <button type="submit" class="btn btn-primary"> Update </button>
+                </div>
+            </div>
+        </form>
+<!---->
+
+<!-- Birth Date -->
+        <form onsubmit="return update_birth_date()">
+            <div class="row p-4 g-0">
+                <div class="col-12 col-xl-2">
+                    <span class="input-group-text" id="birth_date_span">Birth Date</span>
+                </div>
+                <div class="col-10 col-xl-8">
+                    <input type="date" id="birth-date" class="form-control" aria-describedby="birth_date_span">
+                </div>
+                <div class="col-2 m-0 p-0">
+                    <button type="submit" class="btn btn-primary"> Update </button>
+                </div>
+            </div>
+            <div class="alert alert-danger d-none" id="user_birth_date_alert" role="alert">
+                Birth Date is not valid!
+            </div>
+        </form>
+<!---->
+
+<!-- Description -->
+        <form onsubmit="return update_description()">
+            <div class="row p-4 g-0">
+                <div class="col-12 col-xl-2">
+                    <span class="input-group-text" id="description_span">Description</span>
+                </div>
+                <div class="col-10 col-xl-8">
+                    <input type="text" id="description" class="form-control" aria-describedby="description_span">
+                </div>
+                <div class="col-2 m-0 p-0">
+                    <button type="submit" class="btn btn-primary"> Update </button>
+                </div>
+            </div>
+        </form>
+<!---->
+</div>
+
+<!-- Favourites List -->
+    <div class="container border p-4" id="favourites_list">
+        <p> <b> <h1> My favourites </h1> </b> </p>
+        <div class="container">
+            <p class="d-none no_results_alert"> No results </p>
+        </div>
+        <div id="list1" class="row g-4 mt-2 d-flex flex-row flex-nowrap overflow-y-auto">
+            <div id="master1" class="col-6 col-md-5 col-lg-4 col-xl-3 d-none">
+
+                <div class="card h-100">
+                    <a href="#" class="card-img-top-link">
+                        <img class="card-img-top" alt="...">
+                    </a>
+                    <div class="card-body">
+                        <a href="#" class="card-title-link" style="text-decoration: none; color: black;">
+                            <h5 class="card-title"></h5>
+                        </a>
+                        <p class="card-text"></p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <p class="card-text">
+                            <small class="card-date text-body-secondary"></small>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<!---->
+
+<!-- Delete or Logout -->
+    <div class="container text-center bg-body-tertiary">
+        <div class="row p-4 pb-2">
+            <div class="col"></div>
+            <div class="col-4">
+                <button class="btn btn-primary" onclick="logout()">Logout</button>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row p-4 pt-2">
+            <div class="col"></div>
+            <div class="col-4">
+                <button class="btn btn-primary" onclick="document.getElementById('delete_account_password_needed').classList.remove('d-none'); document.getElementById('delete_account_password_given').focus()">Delete Account</button>
+            </div>
+            <div class="col"></div>
+        </div>
+        <form onsubmit="delete_account()">
+            <div class="row p-4 g-0 border border-danger d-none" id="delete_account_password_needed">
+                <div class="col-12 col-lg-2">
+                    <span id="delete_account_password_request" class="input-group-text">Insert your password</span>
+                </div>
+                <div class="col-10 col-lg-8">
+                    <input type="password" id="delete_account_password_given" class="form-control" aria-describedby="delete_account_password_request" required>
+                </div>
+                <div class="col-2 m-0 p-0">
+                    <button type="submit" class="btn btn-primary"> Confirm </button>
+                </div>
+            </div>
+        </form>
+    </div>
+<!---->
+
+<!-- Main script -->
+    <script>
+        let logged_user_email = localStorage.getItem('logged_user_email');
+        let users = JSON.parse(localStorage.getItem('users'));
+
+        // auth protection
+        if (!localStorage.getItem('logged_user_email')){
+            alert("you are not authorized to see this page. Login before!");
+            window.location.href = "../authentication/login.html";
+        }
+        //
+
+        // update favourites, email, first name and last name
+        for (user of users)
+            if (user.email == logged_user_email){
+                document.getElementById("email").value = user.email;
+                document.getElementById("first-name").value = user.first_name;
+                document.getElementById("last-name").value = user.last_name;
+                document.getElementById("birth-date").value = user.birth_date;
+                document.getElementById("description").value = user.description;
+
+                if (user.favourites.length > 0)
+                    show_items(user.favourites, 1);
+                else
+                    document.getElementById("favourites_list").classList.add("d-none");
+            }
+        //
+
+        function edit_email(){
+            document.getElementById("email_password_needed").classList.remove("d-none");
+            document.getElementById("email_password_given").focus();
+            return false;
+        }
+
+        function update_email(){
+            let new_email = document.getElementById("email").value;
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let users = JSON.parse(localStorage.getItem("users"));
+            let password_given = document.getElementById("email_password_given").value;
+
+            // validate email
+            if (!email_valid(new_email))
+                document.getElementById("user_email_alert").classList.remove("d-none");
+            else
+                for (user of users)
+                    if (user.email == logged_user_email)
+                        if (user.pass == password_given){ // if the password inserted is correct
+                            user.email = new_email;
+                            localStorage.setItem("users", JSON.stringify(users));
+                            alert("Email changed successfully!");
+                            logout();
+                        }else
+                            alert("the password inserted is not valid!");
+
+            return false;
+        }
+
+        function edit_password(){
+            document.getElementById("password_password_needed").classList.remove("d-none");
+            document.getElementById("password_password_given").focus();
+            return false;
+        }
+
+        function update_password(){
+            let new_pass = document.getElementById("password").value;
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let users = JSON.parse(localStorage.getItem("users"));
+            let password_given = document.getElementById("password_password_given").value;
+
+            // validate password
+            if (!password_valid(new_pass))
+                document.getElementById("user_password_alert").classList.remove("d-none");
+            else{
+                for (user of users)
+                    if (user.email == logged_user_email)
+                        if (user.pass == password_given){ // if the password inserted is correct
+                            user.pass = new_pass;
+                            localStorage.setItem("users", JSON.stringify(users));
+                            alert("Password changed successfully!");
+                            logout();
+                        }else
+                            alert("the password inserted is not valid!");
+            }
+
+            return false;
+        }
+
+        function update_first_name(){
+            let new_first_name = document.getElementById("first-name").value;
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let users = JSON.parse(localStorage.getItem("users"));
+
+            for (user of users)
+                if (user.email == logged_user_email)
+                    user.first_name = new_first_name;
+                    localStorage.setItem("users", JSON.stringify(users));
+                    alert("First Name changed successfully!");
+
+            return false;
+        }
+
+        function update_last_name(){
+            let new_last_name = document.getElementById("last-name").value;
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let users = JSON.parse(localStorage.getItem("users"));
+
+            for (user of users)
+                if (user.email == logged_user_email)
+                    user.last_name = new_last_name;
+                    localStorage.setItem("users", JSON.stringify(users));
+                    alert("Last Name changed successfully!");
+
+            return false;
+        }
+
+        function update_birth_date(){
+            let new_birth_date = document.getElementById("birth-date").value;
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let users = JSON.parse(localStorage.getItem("users"));
+
+            // Check if the user canceled or entered nothing
+            if (!birth_date_valid(new_birth_date)) {
+                document.getElementById("user_birth_date_alert").classList.remove("d-none");
+            } else {
+                for (user of users)
+                    if (user.email == logged_user_email)
+                        user.birth_date = new_birth_date;
+                        localStorage.setItem("users", JSON.stringify(users));
+                        alert("Birth Date changed successfully!");
+            }
+
+            return false;
+        }
+
+        function update_description(){
+            let new_description = document.getElementById("description").value;
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let users = JSON.parse(localStorage.getItem("users"));
+
+            for (user of users)
+                if (user.email == logged_user_email)
+                    user.description = new_description;
+                    localStorage.setItem("users", JSON.stringify(users));
+                    alert("Description changed successfully!");
+
+            return false;
+        }
+
+        function logout(){
+            localStorage.removeItem("logged_user_email");
+            window.location.href = "../authentication/login.html";
+        };
+
+        function delete_account(){
+            let new_pass = document.getElementById("password").value;
+            let logged_user_email = localStorage.getItem('logged_user_email');
+            let users = JSON.parse(localStorage.getItem("users"));
+            let password_input = document.getElementById("delete_account_password_given").value;
+
+            // Check if the user canceled or entered nothing
+            if (password_input == null || password_input == "") {
+              console.log("No input provided");
+            } else 
+                for (let i=0; i<users.length; i++)
+                    if (users[i].email == logged_user_email)
+                        if (users[i].pass == password_input){ // if the password inserted is correct
+                            users.splice(i, 1);
+                            localStorage.setItem("users", JSON.stringify(users));
+                            alert("Account deleted successfully");
+                            logout();
+                        }else{
+                            alert("the password inserted is not valid!");
+                        }
+        }
+    </script>
+<!---->
+</body>
+
+</html>
